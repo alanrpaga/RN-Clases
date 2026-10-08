@@ -1,3 +1,4 @@
+import { useTheme } from "@/context/ThemeContext";
 import { useGetCampaigns } from "@/hooks/useGetCampaigns";
 import { useLoadDB } from "@/hooks/useLoadDB";
 import {
@@ -6,6 +7,7 @@ import {
   FlatList,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,12 +15,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function Index() {
   const { loading, errorGet, campaigns, getCampaigns } = useGetCampaigns();
   const { loadCampaigns } = useLoadDB(); //Captura el error pero no lo uso por ahora
+  const { theme, colors, toggleTheme } = useTheme();
 
   const renderContent = () => {
     if (errorGet) {
       return (
-        <View>
-          <Text>No se pudo conectar: {errorGet}</Text>
+        <View style={[styles.centered, { backgroundColor: colors.background }]}>
+          <Text style={[styles.errorText, { color: colors.error }]}>
+            No se pudo conectar: {errorGet}
+          </Text>
           <Button title="Reintentar" onPress={getCampaigns} />
         </View>
       );
@@ -35,9 +40,9 @@ export default function Index() {
           data={campaigns}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <View style={styles.userItem}>
-              <Text style={styles.userName}> {item.name} </Text>
-              <Text style={styles.userEmail}> {item.description} </Text>
+            <View style={stylesCard.userItem}>
+              <Text style={[stylesCard.userName, { color: colors.textPrimary }]}> {item.name} </Text>
+              <Text style={[stylesCard.userEmail, { color: colors.textSecondary }]}> {item.description} </Text>
             </View>
           )}
           refreshing={loading}
@@ -55,61 +60,75 @@ export default function Index() {
 
   return (
     <SafeAreaView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.background }]}
       edges={["top", "bottom", "left", "right"]}
     >
-      <View style={styles.header}>
-        <Text style={styles.title}> Lista de campañas </Text>
-        {renderContent()}
+      <View
+        style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+          <View>
+            <Text style={[styles.title, { color: colors.textPrimary }]}>Lista de campañas</Text>
+          </View>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={[styles.themeButton, { backgroundColor: colors.card, borderColor: colors.border }]}
+            onPress={toggleTheme}
+          >
+            <Text style={styles.themeButtonText}>{theme === "light" ? "🌙" : "☀️"}</Text>
+          </TouchableOpacity>
+          </View>
+        
       </View>
+      {renderContent()}
     </SafeAreaView>
   );
 }
 
-//Me los tomo prestados por un rato
+//
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingBottom: 50,
-  },
+  // Solo estructura: los colores se aplican arriba con useTheme().
+  container: { flex: 1 },
   header: {
     padding: 20,
-    backgroundColor: "#f8f9fa",
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 10,
+  headerActions: { flexDirection: "row", alignItems: "center", gap: 8 },
+  title: { fontSize: 22, fontWeight: "bold" },
+  renderText: { fontSize: 12, fontStyle: "italic" },
+  themeButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    borderWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  formToggle: {
-    marginTop: 10,
-  },
+  themeButtonText: { fontSize: 18 },
+  addButton: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 6 },
+  addButtonText: { fontWeight: "600" },
+  searchContainer: { padding: 10, borderBottomWidth: 1 },
+  searchInput: { height: 40, borderRadius: 8, paddingHorizontal: 15 },
   centered: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
-  errorText: {
-    color: "rgb(207, 107, 107)",
-    marginBottom: 10,
-    textAlign: "center",
-  },
+  errorText: { marginBottom: 10, textAlign: "center" },
+});
+
+const stylesCard = StyleSheet.create({
   userItem: {
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
   },
   userName: {
     fontSize: 18,
     fontWeight: "bold",
   },
   userEmail: {
-    color: "#666",
     marginTop: 4,
   },
 });
