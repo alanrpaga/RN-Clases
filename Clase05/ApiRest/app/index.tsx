@@ -1,5 +1,5 @@
 import { useGetCampaigns } from "@/hooks/useGetCampaigns";
-import { usePostCampaign } from "@/hooks/usePostCampaign";
+import { useLoadDB } from "@/hooks/useLoadDB";
 import {
   ActivityIndicator,
   Button,
@@ -12,7 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   const { loading, errorGet, campaigns, getCampaigns } = useGetCampaigns();
-  const { postCampaign } = usePostCampaign(); //Captura el error pero no lo uso por ahora
+  const { loadCampaigns } = useLoadDB(); //Captura el error pero no lo uso por ahora
 
   const renderContent = () => {
     if (errorGet) {
@@ -45,7 +45,7 @@ export default function Index() {
           ListEmptyComponent={
             <View style={styles.centered}>
               <Text> No hay nada para mostrar </Text>
-              <Button title="Cargar" onPress={postCampaign} />
+              <Button title="Cargar" onPress={loadCampaigns} />
             </View>
           }
         ></FlatList>

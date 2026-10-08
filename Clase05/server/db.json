@@ -1,4 +1,83 @@
 {
   "campaigns": [
+    {
+      "game": "Warcraft 3 - Reign of Chaos",
+      "name": "Exodus of the Horde",
+      "faction": "Orcs",
+      "description": "Prologue Campaign",
+      "id": 1
+    },
+    {
+      "game": "Warcraft 3 - Reign of Chaos",
+      "name": "The Scourge of Lordaeron",
+      "faction": "Humans",
+      "description": "Human Campaign",
+      "id": 2
+    },
+    {
+      "game": "Warcraft 3 - Reign of Chaos",
+      "name": "Path of the Damned",
+      "faction": "Undeads",
+      "description": "Undead Campaign",
+      "id": 3
+    },
+    {
+      "game": "Warcraft 3 - Reign of Chaos",
+      "name": "The Invasion of Kalimdor",
+      "faction": "Orcs",
+      "description": "Orc Campaign",
+      "id": 4
+    },
+    {
+      "game": "Warcraft 3 - Reign of Chaos",
+      "name": "Eternity's End",
+      "faction": "Night Elves",
+      "description": "Night Elf Campaign",
+      "id": 5
+    },
+    {
+      "game": "Warcraft 3 - The Frozen Throne",
+      "name": "Terror of the Tides",
+      "faction": "Night Elves",
+      "description": "Sentinel Campaign",
+      "id": 6
+    },
+    {
+      "game": "Warcraft 3 - The Frozen Throne",
+      "name": "Curse of the Blood Elves",
+      "faction": "Blood Elves",
+      "description": "Alliance Campaign",
+      "id": 7
+    },
+    {
+      "game": "Warcraft 3 - The Frozen Throne",
+      "name": "Legacy of the Damned",
+      "faction": "Undeads",
+      "description": "Scourge Campaign",
+      "id": 8
+    },
+    {
+      "game": "Warcraft 3 - The Frozen Throne",
+      "name": "The Founding of Durotar",
+      "faction": "Orcs",
+      "description": "Bonus Campaign",
+      "id": 9
+    },
+    {
+      "game": "Warcraft 3 - Forsaken Kingdom",
+      "name": "The Last Days of Lordaeron",
+      "faction": "Humans",
+      "description": "Human Campaign",
+      "extra": "Demasiada cara la expasión",
+      "id": 10
+    },
+    {
+      "game": "Warcraft 3 - Forsaken Kingdom",
+      "name": "Forsaken Kingdom",
+      "faction": "Undeads",
+      "description": "Undead Campaign",
+      "extra": "Demasiada cara la expasión",
+      "id": 11
+    }
   ]
 }
