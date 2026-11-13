@@ -3,6 +3,7 @@ import { useGames } from "@/features/games/useGames";
 import { useLetsplays } from "@/features/letsplays/useLetsplays";
 import { MemoryItem } from "@/features/memories/MemoryItem";
 import { useMemories } from "@/features/memories/useMemories";
+import { useNotes } from "@/features/notes/useNotes";
 import { useSession } from "@/features/session/SessionContext";
 import { useTheme } from "@/features/theme/ThemeContext";
 import sharedStyles from "@/shared/sharedStyles";
@@ -40,10 +41,12 @@ export default function GameInfo() {
   //Persistencia y obtención de datos
   const { memories, offline, loading, error, addMemory, deleteMemory } = useMemories();
   const { letsplays, deleteLetsplay} = useLetsplays();
+  const { notes, deleteNote} = useNotes();
   const { deleteGame } = useGames();
 
   const itsMemories = memories.filter(memory => memory.id_juego === itsGame.id)
   const itsLetsplays = letsplays.filter(letplay => letplay.id_juego === itsGame.id)
+  const itsNotes = notes.filter((note) => note.id_juego === itsGame.id);
 
   //Entradas de datos
   const [title, setTitle] = useState("");
@@ -78,7 +81,7 @@ export default function GameInfo() {
       }
 
       if (!description.trim()) {
-        setErrorEntryDesc("¿Descripción?");
+        setErrorEntryDesc("¿Qué recordamos?");
         shake();
       }
       return;
@@ -91,8 +94,9 @@ export default function GameInfo() {
     deleteGame(itsGame.id);
     itsMemories.forEach(memory => deleteMemory(memory.id));
     itsLetsplays.forEach(letplay => deleteLetsplay(letplay.id));
+    itsNotes.forEach(note => deleteNote(note.id));
     goBack();
-  },[itsGame, itsMemories, itsLetsplays, deleteGame, deleteMemory, deleteLetsplay]);
+  },[itsGame, itsMemories, itsLetsplays, itsNotes, deleteGame, deleteMemory, deleteLetsplay, deleteNote]);
 
   return (
     <SafeAreaView
