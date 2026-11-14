@@ -11,43 +11,29 @@ interface GameItemProps {
   game: Game;
 }
 
+//Cuerpo de un GameItem
 export const GameItem = memo(({ game }: GameItemProps) => {
+
   const { colors } = useTheme();
 
   return (
-    <Animated.View
-      entering={FadeInLeft.springify()}
-      exiting={FadeOutRight}
-      style={[
-        sharedStyles.itemBody,
-        {
-          backgroundColor: colors.itemBackground,
-          borderColor: colors.itemBorder,
-        },
-      ]}
-    >
+    <Animated.View entering={FadeInLeft.springify()} exiting={FadeOutRight} style={[sharedStyles.itemBody, { backgroundColor: colors.itemBackground, borderColor: colors.itemBorder }]}>
+
       <View style={sharedStyles.flexed}>
         <Text style={[sharedStyles.itemTitle, { color: colors.textPrimary }]}>
           {game.nombre}
         </Text>
       </View>
-      <Link href={{pathname:"/gameinfo", params:{gameData: JSON.stringify(game)}}} asChild>
-        <TouchableOpacity
-          style={StyleSheet.flatten([
-            sharedStyles.buttonBorderTiny,
-            {
-              backgroundColor: colors.itemBackground,
-              borderColor: colors.itemBorder,
-            },
-          ])}
-        >
-          <Text
-            style={[sharedStyles.itemText, { color: colors.textSecondary }]}
-          >
+
+      {/*BOTÓN: Redirige a la pantalla de este Juego pasando los datos del mismo*/}
+      <Link href={{ pathname: "/gameinfo", params: { gameData: JSON.stringify(game) } }} asChild>
+        <TouchableOpacity style={StyleSheet.flatten([sharedStyles.buttonBorderTiny, { backgroundColor: colors.itemBackground, borderColor: colors.itemBorder }])}>
+          <Text style={[sharedStyles.itemText, { color: colors.textSecondary }]}>
             Ver
           </Text>
         </TouchableOpacity>
       </Link>
+
     </Animated.View>
   );
 });

@@ -14,99 +14,85 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import sharedStyles from "../shared/sharedStyles";
 import useShakeAnimation from "@/shared/useShakeAnimation";
 
+/*Este pantalla es un Login genérico, principalmente obliga la existencia de un Usuario y una Sesión para entrar*/
 export default function Login() {
+
+  //Variables utilizadas en la Pantalla
   const { colors, theme, toggleTheme } = useTheme();
   const { login } = useSession();
-  const {shake, shakeStyle} = useShakeAnimation();
+  const { shake, shakeStyle } = useShakeAnimation();
 
+  //Variables para entradas de datos y control de errores
   const [name, setName] = useState("");
   const [errorEntry, setErrorEntry] = useState("");
 
+  //Función encargada del alta de un nuevo Usuario
   const handleLogin = () => {
+    //Revisión previa al alta (informa si encuentra error/dato faltante)
     if (!name.trim()) {
       setErrorEntry("Nombre por favor");
       shake();
       return;
     }
+    //Si llega hasta acá, realiza alta (Stack.Protected ve y permite el paso)
     setErrorEntry("");
     login(name);
   };
 
+  ////
   return (
-    <SafeAreaView
-      edges={["top", "bottom", "left", "right"]}
-      style={[sharedStyles.fullSize, { backgroundColor: colors.background }]}
-    >
-      <TouchableOpacity
-        onPress={toggleTheme}
-        style={[
-          sharedStyles.buttonThemeBorder,
-          { backgroundColor: colors.themeBackground, borderColor: colors.themeBorder },
-        ]}
-      >
+    <SafeAreaView edges={["top", "bottom", "left", "right"]} style={[sharedStyles.fullSize, { backgroundColor: colors.background }]}>
+
+      {/*BOTÓN: Cambia tema (light ↔ dark)*/}
+      <TouchableOpacity onPress={toggleTheme} style={[sharedStyles.buttonThemeBorder, { backgroundColor: colors.themeBackground, borderColor: colors.themeBorder }]}>
         <Text style={sharedStyles.buttonThemeText}>
           {theme === "dark" ? "🌙" : "☀️"}
         </Text>
       </TouchableOpacity>
+
       <Text style={[sharedStyles.logo, { color: colors.textPrimary, textShadowColor: colors.textPrimary }]}>
         LUDERE
       </Text>
-      <View
-        style={[sharedStyles.container, { backgroundColor: colors.background }]}
-      >
-        <Animated.View
-          entering={ZoomIn.springify()}
-          style={sharedStyles.wrapper}
-        >
+
+      <View style={[sharedStyles.container, { backgroundColor: colors.background }]}>
+        <Animated.View entering={ZoomIn.springify()} style={sharedStyles.wrapper}>
           <Text style={[sharedStyles.title, { color: colors.textPrimary }]}>
             ✨Hola~✨
           </Text>
-          <Text
-            style={[sharedStyles.subtitle, { color: colors.textSecondary }]}
-          >
+
+          <Text style={[sharedStyles.subtitle, { color: colors.textSecondary }]}>
             Espero poder ayudarte
           </Text>
-          <Text
-            style={[sharedStyles.subtitle, { color: colors.textSecondary }]}
-          >
+
+          <Text style={[sharedStyles.subtitle, { color: colors.textSecondary }]}>
             ¿Cómo quieres que te llame?
           </Text>
+
           <Animated.View style={[sharedStyles.inputCard, shakeStyle]}>
+
+            {/*ENTRADA: Nombre del Usuario*/}
             <TextInput
-              style={[
-                sharedStyles.inputText,
-                {
-                  backgroundColor: colors.inputBackground,
-                  borderColor: errorEntry ? colors.someError : colors.inputBorder,
-                  color: colors.inputText,
-                },
-              ]}
+              style={[sharedStyles.inputText, { backgroundColor: colors.inputBackground, borderColor: errorEntry ? colors.someError : colors.inputBorder, color: colors.inputText }]}
               autoCapitalize="words"
               onChangeText={setName}
               onSubmitEditing={handleLogin}
               placeholder="Rigoberto"
               placeholderTextColor={colors.textDisabled}
-              value={name}
-            />
+              value={name} />
             {errorEntry !== "" && (
               <Text style={[{ alignSelf: "center" }, { color: colors.someError }]}>
                 {errorEntry}
               </Text>
             )}
           </Animated.View>
-          <TouchableOpacity
-            style={[sharedStyles.buttonBorderless, { backgroundColor: colors.buttonNormal }]}
-            onPress={handleLogin}
-          >
-            <Text
-              style={[
-                sharedStyles.buttonText,
-                { color: colors.textButtonFulled },
-              ]}
-            >
+
+          {/*BOTÓN: Entra al resto de la App con un Usuario existente y una Sesión iniciada*/}
+          <TouchableOpacity style={[sharedStyles.buttonBorderless, { backgroundColor: colors.buttonNormal }]} onPress={handleLogin}>
+            <Text style={[sharedStyles.buttonText, { color: colors.textButtonFulled }]}>
               Entrar
             </Text>
           </TouchableOpacity>
+
         </Animated.View>
       </View>
     </SafeAreaView>

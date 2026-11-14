@@ -26,6 +26,15 @@ const sharedStyles = StyleSheet.create({
     width: "40%",
   },
 
+  buttonBorderlessTiny: {
+    alignSelf: "center",
+    alignItems: "center",
+    borderRadius: sizes.ul,
+    height: 24,
+    justifyContent: "center",
+    width: "10%",
+  },
+
   buttonBorder: {
     alignSelf: "center",
     alignItems: "center",
@@ -183,6 +192,10 @@ const sharedStyles = StyleSheet.create({
     flex: 1,
   },
 
+  flexedGrow: {
+    flexGrow: 1,
+  },
+
   padded: {
     padding: sizes.sm,
   },
@@ -218,6 +231,10 @@ const sharedStyles = StyleSheet.create({
 
   bodyText: {
     fontSize: sizes.md,
+  },
+
+  secretText: {
+    fontSize: sizes.xs,
   },
 
   bodyCentredText: {

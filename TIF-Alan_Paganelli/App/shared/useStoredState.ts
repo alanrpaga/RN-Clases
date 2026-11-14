@@ -29,9 +29,7 @@ export function useStoredState<T>(key: string, initialValue: T) {
 
   useEffect(() => {
     if (!isReady) return;
-    AsyncStorage.setItem(key, JSON.stringify(value)).catch((error) =>
-      console.error("Error al guardar", key, error),
-    );
+    AsyncStorage.setItem(key, JSON.stringify(value)).catch((error) => console.error("Error al guardar", key, error));
   }, [key, value, isReady]);
 
   return [value, setValue, isReady] as const;
@@ -40,8 +38,8 @@ export function useStoredState<T>(key: string, initialValue: T) {
 //Quizás sea útil en un futuro, por ahora no lo uso
 export const clearStoredState = async () => {
   try {
-    await AsyncStorage.removeItem("@App:session")
-    // await AsyncStorage.removeItem("@App:theme") // ← Un poco inutil la verdad, pendiente cómo hacer lo que se desea
+    await AsyncStorage.removeItem("@App:session");
+    await AsyncStorage.removeItem("@App:theme"); // ← Un poco inutil la verdad, pendiente cómo hacer lo que se desea
     console.log("Datos Purgados");
   } catch (error) {
     console.error("Purga Fallida: ", error);

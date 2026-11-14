@@ -13,91 +13,51 @@ interface LetsplayItemProps {
   onFav: (letsplay: Letsplay) => void;
 }
 
-export const LetsplayItem = memo(
-  ({ letsplay, onToggle, onFav }: LetsplayItemProps) => {
-    const { colors } = useTheme();
+//Cuerpo de un LetsplayItem
+export const LetsplayItem = memo(({ letsplay, onToggle, onFav }: LetsplayItemProps) => {
 
-    return (
-      <Animated.View
-        entering={FadeInLeft.springify()}
-        exiting={FadeOutRight}
-        style={[
-          sharedStyles.itemBody,
-          { backgroundColor: colors.itemBackground },
-        ]}
-      >
-        <TouchableOpacity
-          style={sharedStyles.itemContent}
-          onPress={() => onFav(letsplay)}
-        >
-          <Text style={sharedStyles.itemIcon}>
-            {letsplay.favorito ? "❤" : "🖤"}
-          </Text>
-          <View style={sharedStyles.flexed}>
-            <Text
-              style={[
-                sharedStyles.itemSubTitle,
-                {
-                  color: letsplay.estado
-                    ? colors.textDisabled
-                    : colors.textPrimary,
-                },
-                letsplay.estado && sharedStyles.itemTextDone,
-              ]}
-            >
-              {letsplay.nombre}
-            </Text>
-            <Text
-              style={[
-                sharedStyles.itemSubTitle,
-                {
-                  color: letsplay.estado
-                    ? colors.textDisabled
-                    : colors.textSecondary,
-                },
-                letsplay.estado && sharedStyles.itemTextDone,
-              ]}
-            >
-              {letsplay.juego}
-            </Text>
-            <Text
-              style={[
-                sharedStyles.itemText,
-                {
-                  color: letsplay.estado
-                    ? colors.textDisabled
-                    : colors.textSecondary,
-                },
-                letsplay.estado && sharedStyles.itemTextDone,
-              ]}
-            >
-              {letsplay.descripcion}
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <Link href={{pathname:"/letsplayinfo", params:{letsplayData: JSON.stringify(letsplay)}}} asChild>
-          <TouchableOpacity
-            style={StyleSheet.flatten([
-              sharedStyles.buttonBorderTiny,
-              {
-                backgroundColor: colors.itemBackground,
-                borderColor: colors.itemBorder,
-              },
-            ])}
-          >
-            <Text
-              style={[sharedStyles.itemText, { color: colors.textSecondary }]}
-            >
-              Ver
-            </Text>
-          </TouchableOpacity>
-        </Link>
-        <TouchableOpacity onPress={() => onToggle(letsplay)}>
-          <Text style={sharedStyles.itemIcon}>
-            {letsplay.estado ? "✅" : "⬜"}
+  const { colors } = useTheme();
+
+  return (
+    <Animated.View entering={FadeInLeft.springify()} exiting={FadeOutRight} style={[sharedStyles.itemBody, { backgroundColor: colors.itemBackground }]}>
+
+      {/*BOTÓN: Marca a la Partida como "Favorita" (y viceversa)*/}
+      <TouchableOpacity style={sharedStyles.buttonBorderlessTiny} onPress={() => onFav(letsplay)}>
+        <Text style={sharedStyles.itemIcon}>
+          {letsplay.favorito ? "❤" : "🖤"}
+        </Text>
+      </TouchableOpacity>
+
+      <View style={sharedStyles.flexed}>
+        <Text
+          style={[sharedStyles.itemSubTitle, { color: letsplay.estado ? colors.textDisabled : colors.textPrimary }, letsplay.estado && sharedStyles.itemTextDone]}>
+          {letsplay.nombre}
+        </Text>
+        <Text style={[sharedStyles.itemSubTitle, { color: letsplay.estado ? colors.textDisabled : colors.textSecondary }, letsplay.estado && sharedStyles.itemTextDone]}>
+          {letsplay.juego}
+        </Text>
+        <Text
+          style={[sharedStyles.itemText, { color: letsplay.estado ? colors.textDisabled : colors.textSecondary }, letsplay.estado && sharedStyles.itemTextDone]}>
+          {letsplay.descripcion}
+        </Text>
+      </View>
+
+      {/*BOTÓN: Redirige a la pantalla de esta Partida pasando los datos de la misma*/}
+      <Link href={{ pathname: "/letsplayinfo", params: { letsplayData: JSON.stringify(letsplay) } }} asChild>
+        <TouchableOpacity style={StyleSheet.flatten([sharedStyles.buttonBorderTiny, { backgroundColor: colors.itemBackground, borderColor: colors.itemBorder, }])}>
+          <Text style={[sharedStyles.itemText, { color: colors.textSecondary }]}>
+            Ver
           </Text>
         </TouchableOpacity>
-      </Animated.View>
-    );
-  },
-);
+      </Link>
+
+      {/*BOTÓN: Marca a la Partida como "Terminada" (y viceversa)*/}
+      <TouchableOpacity onPress={() => onToggle(letsplay)}>
+        <Text style={sharedStyles.itemIcon}>
+          {letsplay.estado ? "✅" : "⬜"}
+        </Text>
+      </TouchableOpacity>
+
+    </Animated.View>
+  );
+});

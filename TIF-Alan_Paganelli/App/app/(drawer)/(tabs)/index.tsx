@@ -8,104 +8,58 @@ import { Text, TouchableOpacity } from "react-native";
 import Animated, { ZoomIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+/*Este pantalla es el Índice y funciona como un seudorresumen de las altas realizadas (por cada tipo)*/
 export default function Index() {
+  //Variables utilizadas en la Pantalla
   const { colors, theme, toggleTheme } = useTheme();
 
-  const {error, offline} = useGames();
+  //Variables indicativas de algún error relacionado a Firebase
+  const { error, offline } = useGames();
+
   const hmGames = useGames().games.length;
   const hmLetsplays = useLetsplays().letsplays.length;
   const hmMemories = useMemories().memories.length;
   const hmNotes = useNotes().notes.length;
 
+  ////
   return (
-    <SafeAreaView
-      edges={["bottom", "left", "right"]}
-      style={[sharedStyles.fullSize, { backgroundColor: colors.background }]}
-    >
-      <TouchableOpacity
-        onPress={toggleTheme}
-        style={[
-          sharedStyles.buttonThemeBorder,
-          { alignSelf: "flex-end" },
-          {
-            backgroundColor: colors.themeBackground,
-            borderColor: colors.themeBorder,
-          },
-        ]}
-      >
-        <Text style={sharedStyles.buttonThemeText}>
-          {theme === "dark" ? "🌙" : "☀️"}
-        </Text>
+    <SafeAreaView edges={["bottom", "left", "right"]} style={[sharedStyles.fullSize, { backgroundColor: colors.background }]}>
+
+      {/*BOTÓN: Cambia tema (light ↔ dark)*/}
+      <TouchableOpacity onPress={toggleTheme} style={[sharedStyles.buttonThemeBorder, { backgroundColor: colors.themeBackground, borderColor: colors.themeBorder }]}>
+        <Text style={sharedStyles.buttonThemeText}>{theme === "dark" ? "🌙" : "☀️"}</Text>
       </TouchableOpacity>
+
       <Animated.View entering={ZoomIn.springify()} style={sharedStyles.wrapper}>
-        <Text
-          style={[
-            sharedStyles.logo,
-            { color: colors.textPrimary, textShadowColor: colors.textPrimary },
-          ]}
-        >
+        <Text style={[sharedStyles.logo, { color: colors.textPrimary, textShadowColor: colors.textPrimary }]}>
           LUDERE
         </Text>
       </Animated.View>
 
-{!offline && !error &&(
-      <Animated.View entering={ZoomIn.springify()} style={sharedStyles.wrapper}>
-        <Text
-          style={[
-            sharedStyles.title,
-            {
-              color: colors.textSecondary,
-            },
-          ]}
-        >
-          Juegos cargados: {hmGames}
-        </Text>
+      {/*Revisa si Firebase está, sino no muestra nada (Indicador de que algo anda mal)*/}
+      {!offline && !error && (
+        <Animated.View entering={ZoomIn.springify()} style={sharedStyles.wrapper}>
+          <Text style={[sharedStyles.title, { color: colors.textSecondary }]}>
+            Juegos cargados: {hmGames}
+          </Text>
 
-        <Text
-          style={[
-            sharedStyles.subtitle,
-            {
-              color: colors.textSecondary,
-            },
-          ]}
-        >
-          Recuerdos cargados: {hmMemories}
-        </Text>
+          <Text style={[sharedStyles.subtitle, { color: colors.textSecondary }]}>
+            Recuerdos cargados: {hmMemories}
+          </Text>
 
-        <Text
-          style={[
-            sharedStyles.title,
-            {
-              color: colors.textSecondary,
-            },
-          ]}
-        >
-          Partidas cargadas: {hmLetsplays}
-        </Text>
+          <Text style={[sharedStyles.title, { color: colors.textSecondary }]}>
+            Partidas cargadas: {hmLetsplays}
+          </Text>
 
-        <Text
-          style={[
-            sharedStyles.subtitle,
-            {
-              color: colors.textSecondary,
-            },
-          ]}
-        >
-          Notas cargadas: {hmNotes}
-        </Text>
+          <Text style={[sharedStyles.subtitle, { color: colors.textSecondary }]}>
+            Notas cargadas: {hmNotes}
+          </Text>
 
-        <Text
-          style={[
-            sharedStyles.bodyCentredText,
-            {
-              color: colors.textDisabled,
-            },
-          ]}
-        >
-          Feedback
-        </Text>
-      </Animated.View>
-)}
+          <Text style={[sharedStyles.bodyCentredText, { color: colors.textDisabled }]}>
+            Feedback
+          </Text>
+        </Animated.View>
+      )}
     </SafeAreaView>
   );
 }

@@ -13,7 +13,10 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { useSession } from "../session/SessionContext";
 
+//Este código controla las solicitudes a la base de datos asociadas a las Notas
 export function useNotes() {
+
+  //Variables usadas
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,31 +29,25 @@ export function useNotes() {
       setLoading(false);
       return;
     }
-    const notesQuery = query(
-      collection(db, NOTES_COLLECTION),
-      orderBy("fecha", "asc"),
-    );
+
+    //Trae todos las Notas desde la base de datos
+    const notesQuery = query(collection(db, NOTES_COLLECTION), orderBy("fecha", "asc"));
 
     const slowTimer = setTimeout(() => {
       setLoading(false);
       setOffline(true);
     }, 8000);
 
-    const unsubscribe = onSnapshot(
-      notesQuery,
-      { includeMetadataChanges: true },
-      (snapshot) => {
-        if (!snapshot.metadata.fromCache) {
-          clearTimeout(slowTimer);
-          setOffline(false);
-        }
-        const data = snapshot.docs.map(
-          (d) => ({ id: d.id, ...d.data() }) as Note,
-        );
-        setNotes(data);
-        setError(null);
-        setLoading(false);
-      },
+    const unsubscribe = onSnapshot(notesQuery, { includeMetadataChanges: true }, (snapshot) => {
+      if (!snapshot.metadata.fromCache) {
+        clearTimeout(slowTimer);
+        setOffline(false);
+      }
+      const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as Note);
+      setNotes(data);
+      setError(null);
+      setLoading(false);
+    },
       (err) => {
         clearTimeout(slowTimer);
         setError(err.message);
@@ -64,29 +61,22 @@ export function useNotes() {
     };
   }, [user]);
 
+  //Alta de una Nota
   const addNote = useCallback(
     async (texto: string, id_partida: string, id_juego: string, usuario: string) => {
       if (!db) {
         return false;
       }
       try {
-        await addDoc(collection(db, NOTES_COLLECTION), {
-          texto,
-          estado: false,
-          fecha: Date.now(),
-          usuario,
-          id_partida,
-          id_juego,
-        });
+        await addDoc(collection(db, NOTES_COLLECTION), { texto, estado: false, fecha: Date.now(), usuario, id_partida, id_juego });
         return true;
       } catch (error) {
         setError(error instanceof Error ? error.message : "Error desconocido");
         return false;
       }
-    },
-    [],
-  );
+    }, []);
 
+  //Modifica una Nota → hecha o no?
   const toggleNote = useCallback(async (note: Note) => {
     if (!db) {
       return;
@@ -100,6 +90,7 @@ export function useNotes() {
     }
   }, []);
 
+  //Baja de una Nota por id
   const deleteNote = useCallback(async (id: string) => {
     if (!db) {
       return;

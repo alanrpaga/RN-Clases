@@ -1,5 +1,6 @@
 import { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 
+//Este código contiene el estilo de la animación "sacudida"
 export default function useShakeAnimation(){
   
   //Inicia animación sacudir //Gracias profe por la animación

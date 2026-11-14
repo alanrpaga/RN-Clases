@@ -19,67 +19,58 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+/*Este pantalla presenta un listado de cada Juego y permite el alta de estos*/
 export default function Games() {
-  //Utilizadas en la Pantalla
+
+  //Variables utilizadas en la Pantalla
   const { colors, theme, toggleTheme } = useTheme();
   const { user } = useSession();
   const { shake, shakeStyle } = useShakeAnimation();
   const [changer, setChanger] = useState(false);
 
-  //Persistencia y obtención de datos
+  //Obtención y manejo de datos
   const { games, loading, error, offline, addGame } = useGames();
 
-  //Entradas de datos
+  //Variables para entradas de datos y control de errores
   const [name, setName] = useState("");
   const [errorEntry, setErrorEntry] = useState("");
 
-  //"Volteador" entre partes: frontal = "Ver Juego" / dorsal = "Nuevo Juego" 
+  //Función encargada de "voltear" la pantalla: frontal = "Ver Juegos" / dorsal = "Nuevo Juego"
   const changeChanger = useCallback(() => {
-    setChanger(!changer);
     setName("");
     setErrorEntry("");
+    setChanger(!changer);
   }, [changer, setChanger, setName, setErrorEntry]);
 
-  //
+  //Función encargada del alta de un nuevo Juego
   const handleAdd = useCallback(() => {
+    //Revisión previa al alta (informa si encuentra error/dato faltante)
     if (!name.trim()) {
       setErrorEntry("¿Nombre?");
       shake();
       return;
     }
-    setErrorEntry("");
+    //Si llega hasta acá, realiza alta y voltea pantalla
     addGame(name.trim(), user ?? "invitado");
     setName("");
     changeChanger();
   }, [shake, addGame, changeChanger, name, user]);
 
+  ////
   return (
-    <SafeAreaView
-      edges={["bottom", "left", "right"]}
-      style={[sharedStyles.fullSize,
-        { backgroundColor: colors.background },
-      ]}
-    >
-      <TouchableOpacity
-        onPress={toggleTheme}
-        style={[
-          sharedStyles.buttonThemeBorder,
-          {
-            backgroundColor: colors.themeBackground,
-            borderColor: colors.themeBorder,
-          },
-        ]}
-      >
+    <SafeAreaView edges={["bottom", "left", "right"]} style={[sharedStyles.fullSize, { backgroundColor: colors.background }]}>
+
+      {/*BOTÓN: Cambia tema (light ↔ dark)*/}
+      <TouchableOpacity onPress={toggleTheme} style={[sharedStyles.buttonThemeBorder, { backgroundColor: colors.themeBackground, borderColor: colors.themeBorder }]}>
         <Text style={sharedStyles.buttonThemeText}>
           {theme === "dark" ? "🌙" : "☀️"}
         </Text>
       </TouchableOpacity>
 
+      {/*Revisa si Firebase está o no*/}
       {offline && !error && (
         //Esta parte informa si Firebase no se encuentra disponible
-        <View
-          style={[sharedStyles.padded, { backgroundColor: colors.background }]}
-        >
+        <View style={[sharedStyles.padded, { backgroundColor: colors.background }]}>
           <Text
             style={[sharedStyles.fbOfflineText, { color: colors.someError }]}
           >
@@ -88,13 +79,14 @@ export default function Games() {
         </View>
       )}
 
+      {/*INICIA LO DURO*/}
       {error ? (
         //Esta parte informa qué el problema con la conexión a Firebase es local
         <View style={sharedStyles.container}>
           <Text style={[sharedStyles.fbErrorText, { color: colors.someError }]}>
             No se pudo conectar con Firebase
           </Text>
-          <Text style={[sharedStyles.fbErrorText,{ color: colors.textSecondary }]}>
+          <Text style={[sharedStyles.fbErrorText, { color: colors.textSecondary }]}>
             {error}
           </Text>
           <Text
@@ -110,119 +102,76 @@ export default function Games() {
           <ActivityIndicator size="large" color={colors.buttonNormal} />
         </View>
       ) : !changer ? (
-        //Esta parte contiene la pantalla mostrando los datos
-        <View style={sharedStyles.flexed}>
+        //Esta parte contiene la sección qué muestra el listado de Juegos
+        <Animated.View entering={FadeInLeft} exiting={FadeOutRight} style={sharedStyles.flexed}>
+
+          {/*LISTA: listado de Juegos*/}
           <Animated.FlatList
             itemLayoutAnimation={LinearTransition}
             data={games}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <GameItem game={item}/>
-            )}
+            renderItem={({ item }) => (<GameItem game={item} />)}
             scrollEnabled={true}
             nestedScrollEnabled={true}
             showsVerticalScrollIndicator={true}
-            contentContainerStyle={{ flexGrow: 1 }}
+            contentContainerStyle={sharedStyles.flexedGrow}
             ListEmptyComponent={
-              <View
-                style={sharedStyles.container}
-              >
-                <Text
-                  style={[
-                    { color: colors.textSecondary },
-                    sharedStyles.buttonBigText,
-                  ]}
-                >
+              <View style={sharedStyles.container}>
+                <Text style={[{ color: colors.textSecondary }, sharedStyles.buttonBigText]}>
                   No hay juegos cargados
                 </Text>
               </View>
-            }
-          />
-          <TouchableOpacity
-            style={[
-              sharedStyles.buttonBorderless,
-              { backgroundColor: colors.buttonNormal },
-            ]}
-            onPress={changeChanger}
-          >
-            <Text
-              style={[
-                sharedStyles.buttonBigText,
-                { color: colors.textButtonFulled },
-              ]}
-            >
+            } />
+
+          {/*BOTÓN: Voltea pantalla para iniciar el alta de nuevo Juego*/}
+          <TouchableOpacity style={[sharedStyles.buttonBorderless, { backgroundColor: colors.buttonNormal }]} onPress={changeChanger}>
+            <Text style={[sharedStyles.buttonBigText, { color: colors.textButtonFulled }]}>
               +
             </Text>
           </TouchableOpacity>
-        </View>
+
+        </Animated.View>
       ) : (
-        ////
-        //Esta parte contiene la pantalla permitiendo el alta de un nuevo dato
+        //Esta parte contiene la sección qué permite cargar un nuevo Juego
         <Animated.View entering={FadeInLeft} exiting={FadeOutRight}>
-          <Text
-            style={[sharedStyles.bodyTitle, { color: colors.textPrimary }]}
-          >
+
+          <Text style={[sharedStyles.bodyTitle, { color: colors.textPrimary }]}>
             Nombre del juego
           </Text>
+
           <Animated.View style={[sharedStyles.inputCard, shakeStyle]}>
-            <TextInput
-              style={[
-                sharedStyles.inputText,
-                {
-                  backgroundColor: colors.inputBackground,
-                  borderColor: errorEntry
-                    ? colors.someError
-                    : colors.inputBorder,
-                  color: colors.inputText,
-                },
-              ]}
+            {/*ENTRADA: Nombre del Juego*/}
+            <TextInput style={[sharedStyles.inputText, { backgroundColor: colors.inputBackground, borderColor: errorEntry ? colors.someError : colors.inputBorder, color: colors.inputText }]}
               onChangeText={setName}
               onSubmitEditing={handleAdd}
               placeholder="..."
               placeholderTextColor={colors.textDisabled}
-              value={name}
-            />
+              value={name} />
             {errorEntry !== "" && (
-              <Text
-                style={[sharedStyles.bodyCentredText, { color: colors.someError }]}
-              >
+              <Text style={[sharedStyles.bodyCentredText, { color: colors.someError }]}>
                 {errorEntry}
               </Text>
             )}
           </Animated.View>
+
           <Animated.View style={sharedStyles.buttons}>
+
+            {/*BOTÓN: Agrega nuevo Juego*/}
             <TouchableOpacity
-              style={[
-                sharedStyles.buttonBorderless,
-                { backgroundColor: colors.buttonNormal },
-              ]}
-              onPress={handleAdd}
-            >
-              <Text
-                style={[
-                  sharedStyles.buttonBigText,
-                  { color: colors.textButtonFulled },
-                ]}
-              >
+              style={[sharedStyles.buttonBorderless, { backgroundColor: colors.buttonNormal }]} onPress={handleAdd}>
+              <Text style={[sharedStyles.buttonBigText, { color: colors.textButtonFulled }]}>
                 ✔
               </Text>
             </TouchableOpacity>
+
+            {/*BOTÓN: Cancela y voltea*/}
             <TouchableOpacity
-              style={[
-                sharedStyles.buttonBorderless,
-                { backgroundColor: colors.buttonCancel },
-              ]}
-              onPress={changeChanger}
-            >
-              <Text
-                style={[
-                  sharedStyles.buttonBigText,
-                  { color: colors.textButtonFulled },
-                ]}
-              >
+              style={[sharedStyles.buttonBorderless, { backgroundColor: colors.buttonCancel }]} onPress={changeChanger}>
+              <Text style={[sharedStyles.buttonBigText, { color: colors.textButtonFulled }]}>
                 ✖
               </Text>
             </TouchableOpacity>
+
           </Animated.View>
         </Animated.View>
         ////

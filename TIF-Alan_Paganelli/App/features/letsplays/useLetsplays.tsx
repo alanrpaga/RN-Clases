@@ -13,7 +13,10 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { useSession } from "../session/SessionContext";
 
+//Este código controla las solicitudes a la base de datos asociadas a las Partidas
 export function useLetsplays() {
+
+  //Variables usadas
   const [letsplays, setLetsplays] = useState<Letsplay[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,31 +29,26 @@ export function useLetsplays() {
       setLoading(false);
       return;
     }
-    const letsplayQuery = query(
-      collection(db, LETSPLAYS_COLLECTION),
-      orderBy("fecha", "asc"),
-    );
 
+    //Trae todos las Partidas desde la base de datos
+    const letsplayQuery = query(collection(db, LETSPLAYS_COLLECTION), orderBy("fecha", "asc"));
+
+    //Revisión cada cierto tiempo
     const slowTimer = setTimeout(() => {
       setLoading(false);
       setOffline(true);
     }, 8000);
 
-    const unsubscribe = onSnapshot(
-      letsplayQuery,
-      { includeMetadataChanges: true },
-      (snapshot) => {
-        if (!snapshot.metadata.fromCache) {
-          clearTimeout(slowTimer);
-          setOffline(false);
-        }
-        const data = snapshot.docs.map(
-          (d) => ({ id: d.id, ...d.data() }) as Letsplay,
-        );
-        setLetsplays(data);
-        setError(null);
-        setLoading(false);
-      },
+    const unsubscribe = onSnapshot(letsplayQuery, { includeMetadataChanges: true }, (snapshot) => {
+      if (!snapshot.metadata.fromCache) {
+        clearTimeout(slowTimer);
+        setOffline(false);
+      }
+      const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as Letsplay);
+      setLetsplays(data);
+      setError(null);
+      setLoading(false);
+    },
       (err) => {
         clearTimeout(slowTimer);
         setError(err.message);
@@ -64,33 +62,24 @@ export function useLetsplays() {
     };
   }, [user]);
 
+  //Alta de una Partida
   const addLetsplay = useCallback(
     async (nombre: string, descripcion: string, juego: string, id_juego: string, usuario: string) => {
       if (!db) {
         return false;
       }
       try {
-        await addDoc(collection(db, LETSPLAYS_COLLECTION), {
-          nombre,
-          descripcion,
-          favorito: false,
-          estado: false,
-          juego,
-          fecha: Date.now(),
-          usuario,
-          id_juego,
-        });
+        await addDoc(collection(db, LETSPLAYS_COLLECTION), { nombre, descripcion, favorito: false, estado: false, juego, fecha: Date.now(), usuario, id_juego });
         return true;
       } catch (error) {
         setError(error instanceof Error ? error.message : "Error desconocido");
         return false;
       }
-    },
-    [],
-  );
+    }, []);
 
-  // Actualizar: updateDoc cambia solo los campos que le indicamos
+  //Modifica una Partida → pendiente o terminada?
   const toggleLetsplay = useCallback(async (letsplay: Letsplay) => {
+
     if (!db) return;
     try {
       await updateDoc(doc(db, LETSPLAYS_COLLECTION, letsplay.id), { estado: !letsplay.estado });
@@ -99,7 +88,7 @@ export function useLetsplays() {
     }
   }, []);
 
-  // Actualizar: updateDoc cambia solo los campos que le indicamos
+  //Modifica una Partida → favorita?
   const favLetsplay = useCallback(async (letsplay: Letsplay) => {
     if (!db) return;
     try {
@@ -109,6 +98,7 @@ export function useLetsplays() {
     }
   }, []);
 
+  //Baja de una Partida por id
   const deleteLetsplay = useCallback(async (id: string) => {
     if (!db) {
       return;
