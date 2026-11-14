@@ -43,7 +43,7 @@ export const LetsplayItem = memo(({ letsplay, onToggle, onFav }: LetsplayItemPro
       </View>
 
       {/*BOTÓN: Redirige a la pantalla de esta Partida pasando los datos de la misma*/}
-      <Link href={{ pathname: "/letsplayinfo", params: { letsplayData: JSON.stringify(letsplay) } }} asChild>
+      <Link href={{ pathname: "/letsplay-info", params: { letsplayData: JSON.stringify(letsplay) } }} asChild>
         <TouchableOpacity style={StyleSheet.flatten([sharedStyles.buttonBorderTiny, { backgroundColor: colors.itemBackground, borderColor: colors.itemBorder, }])}>
           <Text style={[sharedStyles.itemText, { color: colors.textSecondary }]}>
             Ver

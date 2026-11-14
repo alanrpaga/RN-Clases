@@ -15,6 +15,8 @@ export const lightColors = {
 
   // Colores para botones
   buttonNormal: "#357DE8",
+  buttonEdit: "#2F8BD3",
+  buttonDelete: "#D0521F",
   buttonCancel: "#E2483D",
   textButtonFulled: "#eeeeee", // ← Cuando se tiene texto en un botón con color de fondo
 
@@ -51,6 +53,8 @@ export const darkColors: Colors = {
 
   // Colores para botones
   buttonNormal: "#1868DB",
+  buttonEdit: "#1D73B9",
+  buttonDelete: "#B44216",
   buttonCancel: "#C9372C",
   textButtonFulled: "#eeeeee", // ← Cuando se tiene texto en un botón con color de fondo
 

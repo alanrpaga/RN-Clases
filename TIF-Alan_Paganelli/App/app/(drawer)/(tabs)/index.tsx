@@ -38,8 +38,8 @@ export default function Index() {
 
       {/*Revisa si Firebase está, sino no muestra nada (Indicador de que algo anda mal)*/}
       {!offline && !error && (
-        <Animated.View entering={ZoomIn.springify()} style={sharedStyles.wrapper}>
-          <Text style={[sharedStyles.title, { color: colors.textSecondary }]}>
+        <Animated.View entering={ZoomIn.springify()} style={sharedStyles.container}>
+          <Text style={[sharedStyles.subtitle, { color: colors.textSecondary }]}>
             Juegos cargados: {hmGames}
           </Text>
 
@@ -47,7 +47,7 @@ export default function Index() {
             Recuerdos cargados: {hmMemories}
           </Text>
 
-          <Text style={[sharedStyles.title, { color: colors.textSecondary }]}>
+          <Text style={[sharedStyles.subtitle, { color: colors.textSecondary }]}>
             Partidas cargadas: {hmLetsplays}
           </Text>
 

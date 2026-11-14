@@ -8,6 +8,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  updateDoc,
 } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { useSession } from "../session/SessionContext";
@@ -76,6 +77,16 @@ export function useGames() {
       }
     }, []);
 
+  //Modifica un Juego → edición genérica
+  const editGame = useCallback(async (game: Game) => {
+    if (!db) return;
+    try {
+      await updateDoc(doc(db, GAMES_COLLECTION, game.id), { nombre: game.nombre });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error desconocido");
+    }
+  }, []);
+
   //Baja de un Juego por id
   const deleteGame = useCallback(async (id: string) => {
     if (!db) {
@@ -88,5 +99,5 @@ export function useGames() {
     }
   }, []);
 
-  return { games, loading, error, offline, addGame, deleteGame };
+  return { games, loading, error, offline, addGame, editGame, deleteGame };
 }

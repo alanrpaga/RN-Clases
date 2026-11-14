@@ -71,9 +71,7 @@ export default function Games() {
       {offline && !error && (
         //Esta parte informa si Firebase no se encuentra disponible
         <View style={[sharedStyles.padded, { backgroundColor: colors.background }]}>
-          <Text
-            style={[sharedStyles.fbOfflineText, { color: colors.someError }]}
-          >
+          <Text style={[sharedStyles.fbOfflineText, { color: colors.someError }]}>
             ⚠️Firebase no está disponible, evitemos guardar datos⚠️
           </Text>
         </View>
@@ -89,9 +87,7 @@ export default function Games() {
           <Text style={[sharedStyles.fbErrorText, { color: colors.textSecondary }]}>
             {error}
           </Text>
-          <Text
-            style={[sharedStyles.bodyCentredText, { color: colors.textDisabled }]}
-          >
+          <Text style={[sharedStyles.bodyCentredText, { color: colors.textDisabled }]}>
             Revisá el archivo .env y las reglas de Firestore. Después reiniciá
             con: npx expo start -c
           </Text>
@@ -117,7 +113,7 @@ export default function Games() {
             contentContainerStyle={sharedStyles.flexedGrow}
             ListEmptyComponent={
               <View style={sharedStyles.container}>
-                <Text style={[{ color: colors.textSecondary }, sharedStyles.buttonBigText]}>
+                <Text style={[{ color: colors.textDisabled }, sharedStyles.buttonBigText]}>
                   No hay juegos cargados
                 </Text>
               </View>

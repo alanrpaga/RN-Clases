@@ -121,7 +121,7 @@ export default function Letsplays() {
           <ActivityIndicator size="large" color={colors.buttonNormal} />
         </View>
       ) : games.length === 0 ? (<View style={sharedStyles.container}>
-        <Text style={[{ color: colors.textSecondary }, sharedStyles.buttonBigText]}>
+        <Text style={[{ color: colors.textDisabled }, sharedStyles.buttonBigText]}>
           No hay juegos cargados, primero carga al menos uno
         </Text>
       </View>
@@ -142,7 +142,7 @@ export default function Letsplays() {
             ListEmptyComponent={
               <View style={sharedStyles.container}>
                 <Text
-                  style={[{ color: colors.textSecondary }, sharedStyles.buttonBigText]}>
+                  style={[{ color: colors.textDisabled }, sharedStyles.buttonBigText]}>
                   No hay partidas cargadas
                 </Text>
               </View>
@@ -230,7 +230,7 @@ export default function Letsplays() {
 
           <Animated.View style={sharedStyles.buttons}>
 
-            {/*BOTÓN: Agrega nueva Paritda*/}
+            {/*BOTÓN: Agrega nueva Partida*/}
             <TouchableOpacity
               style={[sharedStyles.buttonBorderless, { backgroundColor: colors.buttonNormal }]} onPress={handleAdd}>
               <Text style={[sharedStyles.buttonBigText, { color: colors.textButtonFulled }]}>

@@ -7,13 +7,14 @@ import { useNotes } from "@/features/notes/useNotes";
 import { useSession } from "@/features/session/SessionContext";
 import { useTheme } from "@/features/theme/ThemeContext";
 import { confirmAction } from "@/shared/confirmAction";
+import { SCREEN_ROUTES } from "@/shared/screenRoutes";
 import sharedStyles from "@/shared/sharedStyles";
 import useShakeAnimation from "@/shared/useShakeAnimation";
-import { useLocalSearchParams } from "expo-router";
-import { goBack } from "expo-router/build/global-state/routing";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -34,6 +35,7 @@ export default function GameInfo() {
   const { user } = useSession();
   const { shake, shakeStyle } = useShakeAnimation();
   const [changer, setChanger] = useState(false);
+  const router = useRouter();
 
   //Datos sobre el juego (recibido desde pantalla previa)
   const { gameData } = useLocalSearchParams<{ gameData: string }>();
@@ -47,7 +49,7 @@ export default function GameInfo() {
 
   //Datos dependientes del juego → Importante: si el juego se elimina, estos también.
   const itsMemories = memories.filter((memory) => memory.id_juego === itsGame.id,);
-  const itsLetsplays = letsplays.filter((letplay) => letplay.id_juego === itsGame.id,);
+  const itsLetsplays = letsplays.filter((letplay) => letplay.id_juego === itsGame.id);
   const itsNotes = notes.filter((note) => note.id_juego === itsGame.id);
 
   //Variables para entradas de datos y control de errores
@@ -86,16 +88,22 @@ export default function GameInfo() {
     changeChanger();
   }, [shake, addMemory, changeChanger, title, description, user, itsGame]);
 
+  //Función encargada de ir a la pantalla de Editar Juego
+  const editTheGame = useCallback(() => {
+    router.navigate({ pathname: `/${SCREEN_ROUTES.GAME_EDIT}`, params: { gameData: JSON.stringify(itsGame) } });
+  }, [itsGame, router])
+
+
   //Función encargada de la baja del Juego y sus dependientes (tras confimación)
   const deleteTheGame = useCallback(() => {
     confirmAction("Eliminar Juego", `¿Seguro? Se eliminará todo lo asociado también.`, async () => {
-    deleteGame(itsGame.id);
-    itsMemories.forEach((memory) => deleteMemory(memory.id));
-    itsLetsplays.forEach((letplay) => deleteLetsplay(letplay.id));
-    itsNotes.forEach((note) => deleteNote(note.id));
-    goBack();
+      deleteGame(itsGame.id);
+      itsMemories.forEach((memory) => deleteMemory(memory.id));
+      itsLetsplays.forEach((letsplay) => deleteLetsplay(letsplay.id));
+      itsNotes.forEach((note) => deleteNote(note.id));
+      router.navigate({ pathname: `/${SCREEN_ROUTES.GAMES}` });
     });
-  }, [itsGame, itsMemories, itsLetsplays, itsNotes, deleteGame, deleteMemory, deleteLetsplay, deleteNote]);
+  }, [itsGame, itsMemories, itsLetsplays, itsNotes, deleteGame, deleteMemory, deleteLetsplay, deleteNote, router]);
 
   ////
   return (
@@ -149,19 +157,34 @@ export default function GameInfo() {
         //Esta parte contiene la sección qué muestra los datos del Juego
         <Animated.View entering={FadeInLeft} exiting={FadeOutRight} style={sharedStyles.flexed}>
 
-          <Text style={[sharedStyles.title, { color: colors.textSecondary }]}>
+          <Text style={[sharedStyles.title, { color: colors.textPrimary }]}>
             {itsGame.nombre}
           </Text>
 
-          {/*BOTÓN: Eliminar Juego*/}
-          <TouchableOpacity
-            style={[sharedStyles.buttonBorder, { borderColor: colors.someError }]} onPress={deleteTheGame}>
-            <Text style={[sharedStyles.buttonText, { color: colors.someError }]}>
-              Eliminar juego
-            </Text>
-          </TouchableOpacity>
+          <Animated.View style={sharedStyles.buttons}>
 
-          <Text style={[sharedStyles.subtitle, { color: colors.textSecondary }]}>
+            {/*BOTÓN: Editar Juego*/}
+            <TouchableOpacity
+              style={StyleSheet.flatten([sharedStyles.buttonBorderless, { backgroundColor: colors.buttonEdit }])} onPress={editTheGame}>
+              <Text style={[sharedStyles.buttonText, { color: colors.textButtonFulled }]}>
+                Editar juego
+              </Text>
+            </TouchableOpacity>
+
+            {/*BOTÓN: Eliminar Juego*/}
+            <TouchableOpacity
+              style={StyleSheet.flatten([sharedStyles.buttonBorderless, { backgroundColor: colors.buttonDelete }])} onPress={deleteTheGame}>
+              <Text style={[sharedStyles.buttonText, { color: colors.textButtonFulled }]}>
+                Eliminar juego
+              </Text>
+            </TouchableOpacity>
+
+          </Animated.View>
+
+          {/*LINEA: Divide la pantalla visualmente*/}
+          <Text style={[sharedStyles.divisor, { borderColor: colors.drawerBackground }]}></Text>
+
+          <Text style={[sharedStyles.title, { color: colors.textPrimary }]}>
             Recuerdos
           </Text>
 
@@ -177,10 +200,10 @@ export default function GameInfo() {
             contentContainerStyle={sharedStyles.flexedGrow}
             ListEmptyComponent={
               <View style={sharedStyles.container}>
-                <Text style={[{ color: colors.textSecondary }, sharedStyles.buttonBigText]}>
+                <Text style={[{ color: colors.textDisabled }, sharedStyles.buttonBigText]}>
                   No hay nada que recordar
                 </Text>
-                <Text style={[{ color: colors.textSecondary }, sharedStyles.buttonBigText]}>
+                <Text style={[{ color: colors.textDisabled }, sharedStyles.buttonBigText]}>
                   ¿Agregamos algo?
                 </Text>
               </View>

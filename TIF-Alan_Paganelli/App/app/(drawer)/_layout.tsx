@@ -1,4 +1,5 @@
 import { useTheme } from "@/features/theme/ThemeContext";
+import { SCREEN_ROUTES } from "@/shared/screenRoutes";
 import sharedStyles from "@/shared/sharedStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { Drawer } from "expo-router/drawer";
@@ -26,7 +27,7 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
-        name="profile"
+        name={SCREEN_ROUTES.PROFILE}
         options={{
           title: "Mi perfil",
           drawerIcon: ({ color, size }) => (

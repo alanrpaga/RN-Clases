@@ -5,13 +5,14 @@ import { useNotes } from "@/features/notes/useNotes";
 import { useSession } from "@/features/session/SessionContext";
 import { useTheme } from "@/features/theme/ThemeContext";
 import { confirmAction } from "@/shared/confirmAction";
+import { SCREEN_ROUTES } from "@/shared/screenRoutes";
 import sharedStyles from "@/shared/sharedStyles";
 import useShakeAnimation from "@/shared/useShakeAnimation";
-import { useLocalSearchParams } from "expo-router";
-import { goBack } from "expo-router/build/global-state/routing";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -32,6 +33,7 @@ export default function LetsplayInfo() {
   const { user } = useSession();
   const { shake, shakeStyle } = useShakeAnimation();
   const [changer, setChanger] = useState(false);
+  const router = useRouter();
 
   //Datos sobre la partida (recibido desde pantalla previa)
   const { letsplayData } = useLocalSearchParams<{ letsplayData: string }>();
@@ -68,14 +70,19 @@ export default function LetsplayInfo() {
     changeChanger();
   }, [shake, addNote, changeChanger, text, user, itsLetsplay]);
 
+  //Función encargada de ir a la pantalla de Editar Partida
+  const editTheLetsplay = useCallback(() => {
+    router.navigate({ pathname: `/${SCREEN_ROUTES.LETSPLAY_EDIT}`, params: { letsplayData: JSON.stringify(itsLetsplay) } });
+  }, [itsLetsplay, router])
+
   //Función encargada de la baja de la Partida y sus dependientes (tras confimación)
-  const deleteTheGame = useCallback(() => {
+  const deleteTheLetsplay = useCallback(() => {
     confirmAction("Eliminar Partida", `¿Seguro? Se eliminará todo lo asociado también.`, async () => {
       deleteLetsplay(itsLetsplay.id);
       itsNotes.forEach((note) => deleteNote(note.id));
-      goBack();
+      router.navigate({ pathname: `/${SCREEN_ROUTES.LETSPLAYS}` });
     });
-  }, [itsLetsplay, itsNotes, deleteLetsplay, deleteNote]);
+  }, [itsLetsplay, itsNotes, deleteLetsplay, deleteNote, router]);
 
   ////
   return (
@@ -132,19 +139,38 @@ export default function LetsplayInfo() {
         //Esta parte contiene la pantalla mostrando los datos
         <Animated.View entering={FadeInLeft} exiting={FadeOutRight} style={sharedStyles.flexed}>
 
-          <Text style={[sharedStyles.title, { color: colors.textSecondary }]}>
+          <Text style={[sharedStyles.title, { color: colors.textPrimary }]}>
             {itsLetsplay.nombre}
           </Text>
 
-          {/*BOTÓN: Eliminar Partida*/}
-          <TouchableOpacity
-            style={[sharedStyles.buttonBorder, { borderColor: colors.someError }]} onPress={deleteTheGame}>
-            <Text style={[sharedStyles.buttonText, { color: colors.someError }]}>
-              Eliminar partida
-            </Text>
-          </TouchableOpacity>
+          <Text style={[sharedStyles.bodyCentredText, { color: colors.textSecondary }]}>
+            {itsLetsplay.descripcion}
+          </Text>
 
-          <Text style={[sharedStyles.subtitle, { color: colors.textSecondary }]}>
+          <Animated.View style={sharedStyles.buttons}>
+
+            {/*BOTÓN: Editar Partida*/}
+            <TouchableOpacity
+              style={StyleSheet.flatten([sharedStyles.buttonBorderless, { backgroundColor: colors.buttonEdit }])} onPress={editTheLetsplay}>
+              <Text style={[sharedStyles.buttonText, { color: colors.textButtonFulled }]}>
+                Editar partida
+              </Text>
+            </TouchableOpacity>
+
+            {/*BOTÓN: Eliminar Partida*/}
+            <TouchableOpacity
+              style={StyleSheet.flatten([sharedStyles.buttonBorderless, { backgroundColor: colors.buttonDelete }])} onPress={deleteTheLetsplay}>
+              <Text style={[sharedStyles.buttonText, { color: colors.textButtonFulled }]}>
+                Eliminar partida
+              </Text>
+            </TouchableOpacity>
+
+          </Animated.View>
+
+          {/*LINEA: Divide la pantalla visualmente*/}
+          <Text style={[sharedStyles.divisor, { borderColor: colors.drawerBackground }]}></Text>
+
+          <Text style={[sharedStyles.title, { color: colors.textPrimary }]}>
             Notas
           </Text>
 
@@ -160,11 +186,11 @@ export default function LetsplayInfo() {
             contentContainerStyle={sharedStyles.flexedGrow}
             ListEmptyComponent={
               <View style={sharedStyles.container}>
-                <Text style={[{ color: colors.textSecondary }, sharedStyles.buttonBigText]}>
+                <Text style={[{ color: colors.textDisabled }, sharedStyles.buttonBigText]}>
                   No hay nada anotado
                 </Text>
                 <Text
-                  style={[{ color: colors.textSecondary }, sharedStyles.buttonBigText]}>
+                  style={[{ color: colors.textDisabled }, sharedStyles.buttonBigText]}>
                   ¿Agregamos algo?
                 </Text>
               </View>

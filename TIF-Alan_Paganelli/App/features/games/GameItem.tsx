@@ -26,7 +26,7 @@ export const GameItem = memo(({ game }: GameItemProps) => {
       </View>
 
       {/*BOTÓN: Redirige a la pantalla de este Juego pasando los datos del mismo*/}
-      <Link href={{ pathname: "/gameinfo", params: { gameData: JSON.stringify(game) } }} asChild>
+      <Link href={{ pathname: "/game-info", params: { gameData: JSON.stringify(game) } }} asChild>
         <TouchableOpacity style={StyleSheet.flatten([sharedStyles.buttonBorderTiny, { backgroundColor: colors.itemBackground, borderColor: colors.itemBorder }])}>
           <Text style={[sharedStyles.itemText, { color: colors.textSecondary }]}>
             Ver

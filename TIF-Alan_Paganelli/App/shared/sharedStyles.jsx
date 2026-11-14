@@ -21,7 +21,7 @@ const sharedStyles = StyleSheet.create({
     borderRadius: sizes.ul,
     height: 48,
     justifyContent: "center",
-    marginBottom: sizes.md,
+    marginBottom: sizes.xs,
     marginTop: sizes.xs,
     width: "40%",
   },
@@ -184,8 +184,8 @@ const sharedStyles = StyleSheet.create({
   buttons: {
     alignSelf: "center",
     flexDirection: "row",
-    marginBottom: sizes.md,
-    marginTop: sizes.md,
+    marginBottom: sizes.xs,
+    marginTop: sizes.sm,
   },
 
   flexed: {
@@ -199,6 +199,13 @@ const sharedStyles = StyleSheet.create({
   padded: {
     padding: sizes.sm,
   },
+
+  divisor: {
+    borderTopWidth: 2, 
+    marginBottom: sizes.xl,
+    marginTop: sizes.xs,
+  },
+
   ////
 
   //SECCIÓN PARA TEXTOS VARIOS
@@ -244,8 +251,7 @@ const sharedStyles = StyleSheet.create({
 
   ////
 
-  //SECCIÓN
-  //OFFLINE o ERROR FIREBASE
+  //SECCIÓN OFFLINE o ERROR FIREBASE
   fbOfflineText: {
     fontSize: sizes.md,
     textAlign: "center",

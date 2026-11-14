@@ -1,4 +1,5 @@
 import { useTheme } from "@/features/theme/ThemeContext";
+import { SCREEN_ROUTES } from "@/shared/screenRoutes";
 import sharedStyles from "@/shared/sharedStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
@@ -24,7 +25,7 @@ export default function DrawerLayout() {
         }}
       >
         <Tabs.Screen
-          name="index"
+          name={SCREEN_ROUTES.INDEX}
           options={{
             title: "Inicio",
             tabBarIcon: ({ color, size }) => (
@@ -33,7 +34,7 @@ export default function DrawerLayout() {
           }}
         />
         <Tabs.Screen
-          name="games"
+          name={SCREEN_ROUTES.GAMES}
           options={{
             title: "Juegos",
             tabBarIcon: ({ color, size }) => (
@@ -42,7 +43,7 @@ export default function DrawerLayout() {
           }}
         />
         <Tabs.Screen
-          name="letsplays"
+          name={SCREEN_ROUTES.LETSPLAYS}
           options={{
             title: "Partidas",
             tabBarIcon: ({ color, size }) => (
@@ -56,20 +57,37 @@ export default function DrawerLayout() {
         />
 
         <Tabs.Screen
-          name="gameinfo"
+          name={SCREEN_ROUTES.GAME_INFO}
           options={{
-            title: "Juego",
+            title: "Ver Juego",
             href: null,
           }}
         />
 
         <Tabs.Screen
-          name="letsplayinfo"
+          name={SCREEN_ROUTES.GAME_EDIT}
           options={{
-            title: "Partida",
+            title: "Editar Juego",
             href: null,
           }}
         />
+
+        <Tabs.Screen
+          name={SCREEN_ROUTES.LETSPLAY_INFO}
+          options={{
+            title: "Ver Partida",
+            href: null,
+          }}
+        />
+
+        <Tabs.Screen
+          name={SCREEN_ROUTES.LETSPLAY_EDIT}
+          options={{
+            title: "Editar Partida",
+            href: null,
+          }}
+        />
+
       </Tabs>
     </View>
   );

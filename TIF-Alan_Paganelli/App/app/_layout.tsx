@@ -1,5 +1,6 @@
 import { SessionProvider, useSession } from "@/features/session/SessionContext";
 import { ThemeProvider, useTheme } from "@/features/theme/ThemeContext";
+import { SCREEN_ROUTES } from "@/shared/screenRoutes";
 import sharedStyles from "@/shared/sharedStyles";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -32,7 +33,7 @@ function RootLayoutNav() {
         {/* TODO -> stack para LOGIN */}
         <Stack.Protected guard={!user}>
           <Stack.Screen
-            name="login"
+            name={SCREEN_ROUTES.LOGIN}
             options={{ animation: "none", headerShown: false }}
           />
         </Stack.Protected>

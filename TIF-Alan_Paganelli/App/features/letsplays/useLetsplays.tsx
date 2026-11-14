@@ -98,6 +98,16 @@ export function useLetsplays() {
     }
   }, []);
 
+  //Modifica una Partida → edición genérica
+  const editLetsplay = useCallback(async (letsplay: Letsplay) => {
+    if (!db) return;
+    try {
+      await updateDoc(doc(db, LETSPLAYS_COLLECTION, letsplay.id), { nombre: letsplay.nombre, descripcion: letsplay.descripcion, juego: letsplay.juego });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error desconocido");
+    }
+  }, []);
+
   //Baja de una Partida por id
   const deleteLetsplay = useCallback(async (id: string) => {
     if (!db) {
@@ -110,5 +120,5 @@ export function useLetsplays() {
     }
   }, []);
 
-  return { letsplays, loading, error, offline, addLetsplay, toggleLetsplay, favLetsplay, deleteLetsplay };
+  return { letsplays, loading, error, offline, addLetsplay, toggleLetsplay, favLetsplay, editLetsplay, deleteLetsplay };
 }
