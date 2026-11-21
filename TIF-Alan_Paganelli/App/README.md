@@ -12,7 +12,7 @@ En otras palabras, **LUDERE** es una libreta digital ordenada destinada a jugado
 * Firebase
 
 ## Instalación
-El código de esta aplicación es público y se puede encontrar [AQUÍ](https://github.com/alanrpaga/RN-Clases/tree/f2a3c10a7a01e03b29e96ce19b248a143ce7571a/TIF-Alan_Paganelli)
+El código de esta aplicación es público y se puede encontrar [AQUÍ](https://github.com/alanrpaga/RN-Clases/tree/main/TIF-Alan_Paganelli)
 
 Para esta aplicación se usó las siguientes librerías:
 * npx expo install react-native-safe-area-context
