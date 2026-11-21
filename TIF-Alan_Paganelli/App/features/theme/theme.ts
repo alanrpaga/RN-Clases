@@ -84,5 +84,3 @@ export const sizes = {
   ul: 32,
   logo: 64,
 }
-
-//atlassian.design/foundations/color/color-palette ← Algunos colores salen desde esta página
